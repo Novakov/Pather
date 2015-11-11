@@ -1,0 +1,4 @@
+[Fake]
+linuxPrefix = "mono"
+command = "packages/FAKE.Core/tools/Fake.exe"
+build = "build.fsx"

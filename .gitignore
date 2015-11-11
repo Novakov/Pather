@@ -1,0 +1,9 @@
+bin
+obj
+*.user
+*.suo
+.vs
+src/.fake
+src/.paket/paket.exe
+
+src/packages
