@@ -3,6 +3,15 @@
 open Fake
 open Fake.Testing.XUnit2
 
+let runTests errorLevel =
+    let setParams (defaults:XUnit2Params) =
+        { defaults with
+            ErrorLevel = errorLevel
+        }
+
+    !! "Tests/bin/Debug/Tests.dll"
+      |> xUnit2 setParams
+
 Target "Build" (fun _ ->
     let setParams (defaults:MSBuildParams) =
           { defaults with
@@ -13,21 +22,13 @@ Target "Build" (fun _ ->
     build setParams "Pather.sln"
 )
 
-Target "RunTests" (fun _ ->
-    let setParams (defaults:XUnit2Params) =
-        { defaults with
-            ErrorLevel = Error
-        }
 
-    !! "Tests/bin/Debug/Tests.dll"
-      |> xUnit2 setParams
-)
+Target "RunTests" (fun _ -> runTests Error)
 
-Target "Watch" (fun _ ->
-    log "Starting watcher!"
-
-    use watcher = !! "**/*.fs" |> WatchChanges (fun changes ->
-        Run "RunTests"
+Target "WatchTests" (fun _ ->
+    use watcher = !! "Tests/bin/Debug/Tests.dll" |> WatchChanges (fun changes ->
+        if changes |> Seq.exists (fun i -> i.Status = FileStatus.Created || i.Status = Changed) then
+            runTests DontFailBuild
     )
 
     System.Console.ReadLine() |> ignore

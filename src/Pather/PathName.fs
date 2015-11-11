@@ -19,6 +19,8 @@ type PathName(path:string) =
     override this.GetHashCode() =
         path.GetHashCode()
 
+    override this.ToString() = this.Path
+
     member this.Normalize() =
         let newPath = path.Replace("/", "\\").TrimEnd('\\')
 

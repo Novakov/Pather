@@ -3,3 +3,4 @@ FsUnit.Xunit
 FsCheck
 FsCheck.Xunit
 xunit.runner.visualstudio
+System.Collections.Immutable

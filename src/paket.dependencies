@@ -9,3 +9,4 @@ nuget xunit.runner.visualstudio  version_in_path: true
 nuget xunit.runners
 nuget FsCheck
 nuget FsCheck.Xunit
+nuget System.Collections.Immutable
