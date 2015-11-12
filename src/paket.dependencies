@@ -10,3 +10,4 @@ nuget xunit.runners
 nuget FsCheck
 nuget FsCheck.Xunit
 nuget System.Collections.Immutable
+nuget CommandLineParser >= 2 beta

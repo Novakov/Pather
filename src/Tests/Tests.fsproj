@@ -64,6 +64,7 @@
     <None Include="App.config" />
     <Compile Include="PathSetTests.fs" />
     <None Include="paket.references" />
+    <Compile Include="CliTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
