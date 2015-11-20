@@ -8,10 +8,11 @@ let main argv =
     let commandArgs = Cli.parse argv
 
     match commandArgs with
-    | None -> failwith "Invalid command\n"
+    | None -> ()
     | Some(command) ->
         match command with 
         | :? Cli.PreviewArgs as a -> Pather.Commands.Preview.execute a
+        | :? Cli.RunArgs as a  -> Pather.Commands.Run.execute a
 
 
     0

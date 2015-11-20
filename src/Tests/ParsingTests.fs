@@ -24,9 +24,9 @@ let failure = NHamcrest.CustomMatcher<obj>("Parse failure",
 let groups (pr:ParseResult) = 
     match pr with
     | Success(g) -> g
-    | Failure(_) -> []
+    | Failure(_) -> Map.empty
 
-let group  (i:int) (pr:ParseResult) =
+let group  (i:string) (pr:ParseResult) =
     (pr |> groups).Item(i)
 
 [<Fact>]
@@ -50,13 +50,11 @@ end
     
     result |> should be success
 
-    result |> groups |> should haveLength 2
-
-    (result |> group 0).Name |> should equal "my_group"
-    (result |> group 0).Paths |> PathSet.toSeq |> should equal [ new PathName("mg1.1"); new PathName("mg1.2") ]
-        
-    (result |> group 1).Name |> should equal "my_group2"
-    (result |> group 1).Paths |> PathSet.toSeq |> should equal [ new PathName("mg2.1"); new PathName("mg2.2") ]
+    result |> groups |> should haveCount 2
+    
+    (result |> group "my_group").Paths |> PathSet.toSeq |> should equal [ new PathName("mg1.1"); new PathName("mg1.2") ]
+            
+    (result |> group "my_group2").Paths |> PathSet.toSeq |> should equal [ new PathName("mg2.1"); new PathName("mg2.2") ]
 
 [<Fact>]
 let ``Empty group is valid`` () =
@@ -92,3 +90,19 @@ let ``Group name must not contain spaces`` () =
 group my group of   
 end     
 " |> parse |> should be failure
+
+
+[<Fact>]
+let ``Empty lines in group should be skipped`` () =
+    let input = @"
+group my_group of
+
+    c:\path
+
+end
+"
+
+    let result = parse input
+    result |> should be success
+    
+    (result |> group "my_group").Paths |> PathSet.toSeq |> should haveLength 1

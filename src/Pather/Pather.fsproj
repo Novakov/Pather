@@ -55,6 +55,7 @@
     <Compile Include="PathsFile.fs" />
     <Compile Include="Cli.fs" />
     <Compile Include="Commands\preview.fs" />
+    <Compile Include="Commands\run.fs" />
     <None Include="paket.references" />
     <Compile Include="Program.fs" />
   </ItemGroup>

@@ -26,3 +26,4 @@ let fromSeq (source:seq<PathName>) = PathSet.Of(source)
 let add (path:PathName) (set:PathSet) = set.Add(path)
 let insert (index:int) (path:PathName) (set:PathSet) = set.Insert index path
 let toSeq (set:PathSet) = set.Items
+let toEnvVar (set:PathSet) = set.Items |> Seq.map (fun i -> i.ToString()) |> String.concat ";"
