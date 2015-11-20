@@ -4,6 +4,7 @@ NUGET
   specs:
     CommandLineParser (2.0.275-beta)
     FAKE.Core (4.8.0)
+    FParsec (1.0.2)
     FsCheck (2.2.1)
       FSharp.Core (>= 3.1.2.5)
     FsCheck.Xunit (2.2.1)

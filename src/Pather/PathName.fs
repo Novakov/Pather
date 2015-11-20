@@ -34,7 +34,5 @@ type PathName(path:string) =
                 | "." -> simplify acc tail
                 | ".." -> simplify (List.tail acc) tail 
                 | p -> simplify (p::acc) tail
-
-        let stack = new System.Collections.Generic.Stack<string>()
-
+     
         new PathName(List.ofArray parts |> simplify [] |> Seq.rev |> String.concat "\\")
