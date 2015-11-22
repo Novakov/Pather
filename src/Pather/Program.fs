@@ -1,6 +1,7 @@
 ﻿// Learn more about F# at http://fsharp.org
 // See the 'F# Tutorial' project for more help.
 
+open System
 open Pather
 
 [<EntryPoint>]
@@ -10,9 +11,10 @@ let main argv =
     match commandArgs with
     | None -> ()
     | Some(command) ->
-        match command with 
-        | :? Cli.PreviewArgs as a -> Pather.Commands.Preview.execute a
-        | :? Cli.RunArgs as a  -> Pather.Commands.Run.execute a
+        let moduleType = command.GetType().DeclaringType
 
+        let executeMethod = moduleType.GetMethod("execute")
+
+        executeMethod.Invoke(null, [|command|]) |> ignore
 
     0

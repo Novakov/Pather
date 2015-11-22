@@ -4,8 +4,19 @@ open System
 open System.IO
 open System.Diagnostics
 open Pather
+open CommandLine
 
-let execute (args: Cli.RunArgs) = 
+[<Verb("run")>]
+type Args = {
+    [<Option('f', "file", Required = true)>]File: string;
+    [<Option('g', "group", Default  = "default")>]Group: string;
+    [<Option('m', "mode", Default = "append")>]Mode: string;
+    [<Value(0, HelpText = "command to run", Required = true)>]Command: string;
+    [<Value(1, HelpText = "command args")>]Args: string seq
+}
+
+
+let execute (args: Args) = 
     let input = File.ReadAllText args.File
     let file = match PathsFile.parse input with
                 | PathsFile.Success(f) -> f

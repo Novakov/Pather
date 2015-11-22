@@ -1,10 +1,17 @@
 ﻿module Pather.Commands.Preview
 
 open System.IO
+open CommandLine
 open Pather.PathsFile
 open Pather
 
-let execute (args: Pather.Cli.PreviewArgs) =
+[<Verb("preview")>]
+type Args = { 
+    [<Option('f', "file", Required = true)>]File: string 
+}
+
+
+let execute (args: Args) =
     let input = File.ReadAllText args.File
     let groups = match parse input with
                  | Success(g) -> g
