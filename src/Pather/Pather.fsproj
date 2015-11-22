@@ -53,11 +53,13 @@
     <None Include="App.config" />
     <Compile Include="PathSet.fs" />
     <Compile Include="PathsFile.fs" />
+    <Compile Include="SystemSettings.fs" />
     <Compile Include="Cli.fs" />
     <Compile Include="Commands\preview.fs" />
     <Compile Include="Commands\run.fs" />
-    <None Include="paket.references" />
+    <Compile Include="Commands\dumpSys.fs" />
     <Compile Include="Program.fs" />
+    <None Include="paket.references" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

@@ -27,7 +27,7 @@ let parse input =
                                  
 
     let emptyLine = followedByNewline >>% None
-    let nonEmptyLine = many1Satisfy notWhitespace .>> padding .>> followedByNewline
+    let nonEmptyLine = satisfy notWhitespace .>>. restOfLine false .>> followedByNewline |>> (fun (c,s) -> c.ToString() + s)
 
     let lineWithPath = nonEmptyLine |>> (fun i -> Some(new PathName(i.Trim())))
 
@@ -40,7 +40,7 @@ let parse input =
                         { 
                             Group.Name = groupName; 
                             Paths = paths |> Seq.filter (fun i->i.IsSome) |> Seq.map (fun i -> i.Value) |> PathSet.fromSeq
-                        })                   
+                        })
 
     let parser = many group .>> eof
                     |>> (Seq.map (fun i-> (i.Name, i)) >> Map.ofSeq)

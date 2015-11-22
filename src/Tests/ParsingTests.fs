@@ -106,3 +106,17 @@ end
     result |> should be success
     
     (result |> group "my_group").Paths |> PathSet.toSeq |> should haveLength 1
+
+[<Fact>]
+let ``Space in path`` () =
+    let input = @"
+group my_group of
+
+    c:\Program files (x86)\test
+
+end
+"
+    let result = parse input
+    result |> should be success
+
+    ()
