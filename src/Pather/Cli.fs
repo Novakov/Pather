@@ -17,7 +17,8 @@ type PreviewArgs = {
 type RunArgs = {
     [<Option('f', "file", Required = true)>]File: string;
     [<Option('g', "group", Default  = "default")>]Group: string;
-    [<Value(0, HelpText = "command to run", Required = true)>]Command: string
+    [<Option('m', "mode", Default = "append")>]Mode: string;
+    [<Value(0, HelpText = "command to run", Required = true)>]Command: string;
     [<Value(1, HelpText = "command args")>]Args: string seq
 }
 
