@@ -106,7 +106,7 @@ let ``[Merge] TakeFirst should take first set`` () =
     let set1 = [path1; path2] |> PathSet.fromSeq
     let set2 = [path3; path4] |> PathSet.fromSeq
 
-    set1 |> PathSet.merge set2 PathSet.Leave |> should equal set1
+    set1 |> PathSet.merge set2 PathSet.MergeKind.Leave |> should equal set1
 
 [<Fact>]
 let ``[Merge] TakeSecond should take second set`` () =
@@ -118,7 +118,7 @@ let ``[Merge] TakeSecond should take second set`` () =
     let set1 = [path1; path2] |> PathSet.fromSeq
     let set2 = [path3; path4] |> PathSet.fromSeq
 
-    set1 |> PathSet.merge set2 PathSet.Replace |> should equal set2
+    set1 |> PathSet.merge set2 PathSet.MergeKind.Replace |> should equal set2
 
 [<Fact>]
 let ``[Merge] Append should create set with all items from first, then unique from second`` () =
@@ -130,7 +130,7 @@ let ``[Merge] Append should create set with all items from first, then unique fr
     let set2 = [path2; path3] |> PathSet.fromSeq
     let expected = [path1; path2; path3] |> PathSet.fromSeq
 
-    set1 |> PathSet.merge set2 PathSet.Append |> should equal expected
+    set1 |> PathSet.merge set2 PathSet.MergeKind.Append |> should equal expected
 
 [<Fact>]
 let ``[Merge] Prepend should create set with all items from second, then unique from first`` () =
@@ -142,7 +142,7 @@ let ``[Merge] Prepend should create set with all items from second, then unique 
     let set2 = [path2; path3] |> PathSet.fromSeq
     let expected = [path2; path3; path1] |> PathSet.fromSeq
 
-    set1 |> PathSet.merge set2 PathSet.Prepend |> should equal expected
+    set1 |> PathSet.merge set2 PathSet.MergeKind.Prepend |> should equal expected
 
 
 [<Fact>]

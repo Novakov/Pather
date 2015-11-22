@@ -5,10 +5,10 @@ open System
 open System.Linq
 
 type MergeKind =
-    | Leave
-    | Replace
-    | Append
-    | Prepend
+    | Leave = 1
+    | Replace = 2
+    | Append = 3
+    | Prepend = 4
 
 type PathSet private(paths: ImmutableList<PathName>) =
     static member Empty() = new PathSet(ImmutableList<PathName>.Empty)
@@ -36,7 +36,7 @@ type PathSet private(paths: ImmutableList<PathName>) =
         this.Items.GetHashCode()
 
     override this.ToString() = 
-        this.Items |> Seq.map (fun i -> i.ToString()) |> String.concat ";"
+        this.Items |> Seq.map (fun i -> i.ToString()) |> String.concat "; "
 
     member this.Contains path =
         paths.Contains(path)
@@ -68,8 +68,8 @@ let append (paths: seq<PathName>) (set:PathSet) =
 
 let merge (second:PathSet) (kind: MergeKind) (first :PathSet) = 
     match kind with
-    | Leave -> first
-    | Replace -> second
-    | Append -> first |> append second.Items
-    | Prepend -> second |> append first.Items
+    | MergeKind.Leave -> first
+    | MergeKind.Replace -> second
+    | MergeKind.Append -> first |> append second.Items
+    | MergeKind.Prepend -> second |> append first.Items
         

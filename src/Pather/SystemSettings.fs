@@ -8,8 +8,22 @@ let private readSet key name =
     let value = Registry.GetValue(key, name, "").ToString()
     value |> PathSet.fromEnvVar
 
+let private writeSet key name set =
+    let value = set |> PathSet.toEnvVar
+
+    Registry.SetValue(key, name, value)
+
+let private userKey = @"HKEY_CURRENT_USER\Environment"
+let private systemKey = @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+
 let getUserPath () =
-    readSet  @"HKEY_CURRENT_USER\Environment" "PATH"
+    readSet userKey "PATH"
 
 let getSystemPath () =
-    readSet @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "PATH"
+    readSet systemKey "PATH"
+
+let setUserPath set =
+    writeSet userKey "PATH" set
+
+let setSystemPath set =
+    writeSet systemKey "PATH" set

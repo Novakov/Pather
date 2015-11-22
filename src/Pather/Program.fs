@@ -9,8 +9,10 @@ let main argv =
     let commandArgs = Cli.parse argv
 
     match commandArgs with
-    | None -> ()
-    | Some(command) ->
+    | Cli.Error(errors) -> 
+        errors |> Seq.iter (printf "Error: %s\n")
+
+    | Cli.ExecuteCommand(command) ->
         let moduleType = command.GetType().DeclaringType
 
         let executeMethod = moduleType.GetMethod("execute")
