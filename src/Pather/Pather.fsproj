@@ -25,8 +25,9 @@
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug\Pather.XML</DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>config-sys -f D:\paths.txt -p User -U Append</StartArguments>
+    <Prefer32Bit>false</Prefer32Bit>
+    <StartArguments>load -f xxx</StartArguments>
+    <NoWarn>9</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,10 +57,13 @@
     <Compile Include="PathsFile.fs" />
     <Compile Include="SystemSettings.fs" />
     <Compile Include="Cli.fs" />
+    <Compile Include="Native.fs" />
+    <Compile Include="RemoteProcess.fs" />
     <Compile Include="Commands\preview.fs" />
     <Compile Include="Commands\run.fs" />
     <Compile Include="Commands\dumpSys.fs" />
     <Compile Include="Commands\configSys.fs" />
+    <Compile Include="Commands\load.fs" />
     <Compile Include="Program.fs" />
     <None Include="paket.references" />
   </ItemGroup>

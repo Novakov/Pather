@@ -36,3 +36,5 @@ type PathName(path:string) =
                 | p -> simplify (p::acc) tail
      
         new PathName(List.ofArray parts |> simplify [] |> Seq.rev |> String.concat "\\")
+
+    static member FromString(s: string) = PathName(s)

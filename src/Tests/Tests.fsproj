@@ -64,6 +64,7 @@
     <None Include="App.config" />
     <Compile Include="PathSetTests.fs" />
     <Compile Include="ParsingTests.fs" />
+    <Compile Include="EnvironmentInjectionTests.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +75,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\EnvInjectionHelper\EnvInjectionHelper.fsproj">
+      <Name>EnvInjectionHelper</Name>
+      <Project>{04fe3e51-013b-4da9-b9ff-90bfde0a6655}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Pather\Pather.fsproj">
       <Name>Pather</Name>
       <Project>{388bd125-373e-4732-9fc8-52c1ff9777b3}</Project>

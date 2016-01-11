@@ -22,6 +22,7 @@ type PathSet private(paths: ImmutableList<PathName>) =
             let rec cmp a b =
                 match (a, b) with
                 | ([], []) -> true
+                | ([], _) | (_, []) -> false
                 | (ah::at, bh::bt) when ah = bh -> cmp at bt
                 | (ah::at, bh::bt) -> false
             
