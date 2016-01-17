@@ -13,3 +13,9 @@ let readPathSet (processId: int) =
     match path with
     | Some(p) -> PathSet.fromEnvVar p
     | None -> PathSet.fromSeq []
+
+let setPath (processId: int) (path: PathSet.PathSet) =
+    let proc = Process.GetProcessById(processId)
+
+    Native.writeEnvVariable proc.Handle "PATH" (PathSet.toEnvVar path)
+    ()

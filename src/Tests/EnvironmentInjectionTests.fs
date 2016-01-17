@@ -65,3 +65,15 @@ let ``Should read PathSet from process`` () =
 
         remotePathSet |> should equal pathSet
     )
+
+[<Fact>]
+let ``Should set PathSet in process`` () =
+    helper (fun proc ->
+        let pathSet = [ "C:\MyPath1"; "C:\MyPath2" ] |> Seq.map PathName.FromString |> PathSet.fromSeq
+
+        RemoteProcess.setPath proc.Id pathSet
+
+        let remotePathSet = proc |> get "PATH" |> PathSet.fromEnvVar
+
+        remotePathSet |> should equal pathSet
+    )

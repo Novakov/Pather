@@ -113,6 +113,26 @@ type MemoryBasicInformation = struct
     val mutable Type:int;
 end    
 
+[<StructLayout(LayoutKind.Sequential)>]
+type SymbolInfo = struct
+    [<DefaultValue(false)>]val mutable SizeOfStruct: Int32;
+    [<DefaultValue(false)>]val mutable TypeIndex: UInt32;
+    [<DefaultValue(false)>]val mutable Reserved0: UInt64;
+    [<DefaultValue(false)>]val mutable Reserved1: UInt64;
+    [<DefaultValue(false)>]val mutable Index: UInt32;
+    [<DefaultValue(false)>]val mutable Size: UInt32;
+    [<DefaultValue(false)>]val mutable ModBase: UInt64;
+    [<DefaultValue(false)>]val mutable Flags: UInt32;
+    [<DefaultValue(false)>]val mutable Value: UInt64;
+    [<DefaultValue(false)>]val mutable Address: UInt64;
+    [<DefaultValue(false)>]val mutable Register: UInt32;
+    [<DefaultValue(false)>]val mutable Scope: UInt32;
+    [<DefaultValue(false)>]val mutable Tag: UInt32;
+    [<DefaultValue(false)>]val mutable NameLen: UInt32;
+    [<DefaultValue(false)>]val mutable MaxNameLen: UInt32;
+    [<DefaultValue(false)>]val mutable Name: nativeptr<char>;    
+end
+
 [<Flags>]
 type AllocationType = 
      | Commit = 0x1000
@@ -155,6 +175,15 @@ extern void FillMemory(IntPtr destination, int length, byte fill);
 
 [<DllImport("kernel32.dll", SetLastError = true)>]
 extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, IntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+
+[<DllImport("DbgHelp.dll")>]
+extern bool SymInitialize(IntPtr hProcess, nativeint userSearchPath, bool fInvadeProcess);
+
+[<DllImport("DbgHelp.dll")>]
+extern bool SymCleanup(IntPtr hProcess);
+
+[<DllImport("DbgHelp.dll", SetLastError = true)>]
+extern bool SymFromName(IntPtr hProcess, string name, SymbolInfo * symbol);
 
 let getProcessBasicInfo (handle: IntPtr) =
     let basicInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typedefof<ProcessBasicInformation>));
@@ -247,3 +276,19 @@ let readEnvironmentBlock (processHandle: IntPtr) =
 
     result
 
+let findFunction (processHandle: IntPtr) (library: string) (name: string) =
+    SymInitialize(processHandle, IntPtr.Zero, false) |> ignore
+
+    let mutable symInfo = SymbolInfo()
+    symInfo.SizeOfStruct <- Marshal.SizeOf(typedefof<SymbolInfo>)
+
+    let b = SymFromName(processHandle, "LoadLibrary", &&symInfo)
+    let e = Marshal.GetLastWin32Error()
+    
+    SymCleanup(processHandle) |> ignore
+    ()
+
+let writeEnvVariable (processHandle: IntPtr) (name: string) (value: string) =
+    let loadLibrary = findFunction processHandle  "kernel32" "LoadLibraryW"
+
+    ()
