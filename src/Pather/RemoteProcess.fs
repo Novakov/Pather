@@ -56,3 +56,11 @@ let readPathSet (processId : int) =
 let setPath (processId : int) (path : PathSet.PathSet) = 
     use channel = openChannel processId
     setEnvVar channel "PATH" (PathSet.toEnvVar path) |> ignore
+
+
+let parentProcessId () =
+    use snapshot = ToolHelp.createSnapshot ToolHelp.SnapshotFlags.Process 0
+    let currentProcessId = Process.GetCurrentProcess().Id
+    let currentProcess = ToolHelp.processes snapshot |> Seq.find (fun p -> p.ProcessId = currentProcessId)
+
+    currentProcess.ParentProcessId
