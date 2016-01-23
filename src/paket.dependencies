@@ -12,3 +12,4 @@ nuget FsCheck.Xunit
 nuget System.Collections.Immutable
 nuget CommandLineParser >= 2 beta
 nuget FParsec
+nuget PeNet

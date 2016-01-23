@@ -35,6 +35,7 @@ let helper (action) =
     
     startInfo.RedirectStandardInput <- true
     startInfo.RedirectStandardOutput <- true
+    startInfo.RedirectStandardError <- false
     startInfo.UseShellExecute <- false
 
     let proc = Process.Start(startInfo)            
@@ -76,4 +77,12 @@ let ``Should set PathSet in process`` () =
         let remotePathSet = proc |> get "PATH" |> PathSet.fromEnvVar
 
         remotePathSet |> should equal pathSet
+    )
+
+[<Fact>]
+let ``Should do injection ping-ping`` () =
+    helper (fun proc ->
+        use channel = RemoteProcess.openChannel proc.Id
+
+        RemoteProcess.pingPong channel |> should equal true
     )

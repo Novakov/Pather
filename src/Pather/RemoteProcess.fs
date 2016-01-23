@@ -2,20 +2,57 @@
 
 open System
 open System.Diagnostics
+open System.IO.Pipes
+open System.IO
+open System.Text
 open Pather
 
-let readPathSet (processId: int) =    
-    let proc = Process.GetProcessById(processId)
+let private injectionPath =
+    let basePath = System.AppDomain.CurrentDomain.BaseDirectory
+    {
+        Native.LibraryPath.Path86 = Path.Combine(basePath, "Injections", "Injection.x86.dll")
+        Native.LibraryPath.Path64 = Path.Combine(basePath, "Injections", "Injection.x64.dll")
+    }
 
-    let environment = Native.readEnvironmentBlock proc.Handle
-    let path = environment |> Map.tryPick (fun k v -> if k.Equals("Path", StringComparison.InvariantCultureIgnoreCase) then Some(v) else None)
+let openChannel (processId: int) =
+    let proc = Process.GetProcessById(processId)
     
-    match path with
-    | Some(p) -> PathSet.fromEnvVar p
-    | None -> PathSet.fromSeq []
+    let pipeName = sprintf "pather\%d" processId
+    
+    let pipe = new NamedPipeServerStream(pipeName)    
 
-let setPath (processId: int) (path: PathSet.PathSet) =
-    let proc = Process.GetProcessById(processId)
+    Native.injectLibrary proc.Handle injectionPath
 
-    Native.writeEnvVariable proc.Handle "PATH" (PathSet.toEnvVar path)
-    ()
+    pipe.WaitForConnection()
+
+    pipe
+
+let pingPong (channel: NamedPipeServerStream) =
+    channel.WriteByte(45uy)
+
+    channel.ReadByte() = 54
+
+let setEnvVar (channel: NamedPipeServerStream) (variable: string) (value: string) =
+    use writer = new BinaryWriter(channel, Encoding.Unicode)
+
+    writer.Write(01uy)
+    writer.Write(variable)
+    writer.Write(value)
+
+    channel
+
+let readEnvVar (channel: NamedPipeServerStream) (variable: string) =
+    use writer = new BinaryWriter(channel, Encoding.Unicode)
+    writer.Write(02uy)
+    writer.Write(variable)
+    
+    use reader = new BinaryReader(channel, Encoding.Unicode)
+    reader.ReadString()    
+
+let readPathSet (processId : int) = 
+    use channel = openChannel processId
+    readEnvVar channel "PATH" |> PathSet.fromEnvVar
+
+let setPath (processId : int) (path : PathSet.PathSet) = 
+    use channel = openChannel processId
+    setEnvVar channel "PATH" (PathSet.toEnvVar path) |> ignore

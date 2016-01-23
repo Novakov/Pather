@@ -4,134 +4,8 @@ open System
 open System.Text
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
-
-[<StructLayout(LayoutKind.Sequential, Pack = 1)>]
-type ProcessBasicInformation = struct
-      val mutable ExitStatus: IntPtr;
-      val mutable PebBaseAddress: nativeptr<byte>;
-      val mutable AffinityMask: IntPtr;
-      val mutable BasePriority: IntPtr;
-      val mutable UniqueProcessId: UIntPtr;
-      val mutable InheritedFromUniqueProcessId: IntPtr;    
-end
-
-[<StructLayout(LayoutKind.Sequential)>]
-type PEB = struct    
-    val mutable Reserved1_0: Byte;
-    val mutable Reserved1_1: Byte;
-    
-    val mutable BeingDebugged: Byte;
-       
-    val mutable Reserved2_0: Byte; 
-    
-    val mutable Reserved3_0: IntPtr;
-    val mutable Reserved3_1: IntPtr;
-
-    val mutable Ldr: IntPtr;
-
-    val mutable ProcessParameters: nativeptr<byte>;
-end
-
-[<StructLayout(LayoutKind.Sequential)>]
-type UnicodeString = struct
-    val mutable Length: UInt16;
-    val mutable MaximumLength: UInt16;   
-    val mutable Buffer: nativeptr<char>;
-end
-
-[<StructLayout(LayoutKind.Sequential)>]
-type RtlString = struct
-    val mutable Length: UInt16;
-    val mutable MaximumLength: UInt16;   
-    val mutable Buffer: nativeptr<Byte>;
-end
-
-[<StructLayout(LayoutKind.Sequential, Pack = 1)>]
-[<StructAttribute>]
-type CurDir = struct
-    val mutable DosPath: UnicodeString;
-    val mutable Handle: nativeint;
-end
-
-[<StructLayout(LayoutKind.Sequential, Pack = 1)>]
-[<StructAttribute>]
-type RtlDriveLetterCurDir = struct
-    val mutable Flags: UInt16
-    val mutable Length: UInt16
-    val mutable TimeStamp: UInt32
-    val mutable DosPath: RtlString
-end
-
-[<StructLayout(LayoutKind.Sequential)>]
-[<StructAttribute>]
-type RTLUserProcessParameters = struct        
-    val mutable MaximumLength    : UInt32
-    val mutable Length           : UInt32
-    val mutable Flags            : UInt32
-    val mutable DebugFlags       : UInt32
-    val mutable ConsoleHandle    : nativeint
-    val mutable ConsoleFlags     : UInt32
-    val mutable StandardInput    : nativeint
-    val mutable StandardOutput   : nativeint
-    val mutable StandardError    : nativeint
-    val mutable CurrentDirectory : CurDir
-    val mutable DllPath          : UnicodeString
-    val mutable ImagePathName    : UnicodeString
-    val mutable CommandLine      : UnicodeString
-    val mutable Environment      : nativeint
-    val mutable StartingX        : UInt32
-    val mutable StartingY        : UInt32
-    val mutable CountX           : UInt32
-    val mutable CountY           : UInt32
-    val mutable CountCharsX      : UInt32
-    val mutable CountCharsY      : UInt32
-    val mutable FillAttribute    : UInt32
-    val mutable WindowFlags      : UInt32
-    val mutable ShowWindowFlags  : UInt32
-    val mutable WindowTitle      : UnicodeString
-    val mutable DesktopInfo      : UnicodeString
-    val mutable ShellInfo        : UnicodeString
-    val mutable RuntimeData      : UnicodeString
-    [<MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)>]
-    val mutable CurrentDirectores : RtlDriveLetterCurDir array
-    val mutable EnvironmentSize  : UInt64
-    val mutable EnvironmentVersion : Byte
-    val mutable PackageDependencyData : nativeint
-    val mutable ProcessGroupId   : UInt32
-    val mutable LoaderThreads    : UInt32
-end
-
-[<StructLayout(LayoutKind.Sequential)>]
-[<StructAttribute>]
-type MemoryBasicInformation = struct
-    val mutable BaseAddress:IntPtr;
-    val mutable AllocationBase:IntPtr;
-    val mutable AllocationProtect:int;
-    val mutable RegionSize:IntPtr;
-    val mutable State:int;
-    val mutable Protect:int;
-    val mutable Type:int;
-end    
-
-[<StructLayout(LayoutKind.Sequential)>]
-type SymbolInfo = struct
-    [<DefaultValue(false)>]val mutable SizeOfStruct: Int32;
-    [<DefaultValue(false)>]val mutable TypeIndex: UInt32;
-    [<DefaultValue(false)>]val mutable Reserved0: UInt64;
-    [<DefaultValue(false)>]val mutable Reserved1: UInt64;
-    [<DefaultValue(false)>]val mutable Index: UInt32;
-    [<DefaultValue(false)>]val mutable Size: UInt32;
-    [<DefaultValue(false)>]val mutable ModBase: UInt64;
-    [<DefaultValue(false)>]val mutable Flags: UInt32;
-    [<DefaultValue(false)>]val mutable Value: UInt64;
-    [<DefaultValue(false)>]val mutable Address: UInt64;
-    [<DefaultValue(false)>]val mutable Register: UInt32;
-    [<DefaultValue(false)>]val mutable Scope: UInt32;
-    [<DefaultValue(false)>]val mutable Tag: UInt32;
-    [<DefaultValue(false)>]val mutable NameLen: UInt32;
-    [<DefaultValue(false)>]val mutable MaxNameLen: UInt32;
-    [<DefaultValue(false)>]val mutable Name: nativeptr<char>;    
-end
+open System.IO
+open PeNet
 
 [<Flags>]
 type AllocationType = 
@@ -158,137 +32,52 @@ type MemoryProtection =
      | NoCacheModifierflag = 0x200
      | WriteCombineModifierflag = 0x400
 
-[<DllImport("ntdll.dll", SetLastError = true)>]
-extern int NtQueryInformationProcess(IntPtr processHandle, int processInformationClass, IntPtr processInformation, int processInformationLength, IntPtr returnLength);
-
-[<DllImport("kernel32.dll", SetLastError = true)>]
-extern Int32 ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, IntPtr buffer, int size, int * lpNumberOfBytesRead);
 
 [<DllImport("kernel32.dll", SetLastError = true)>]
 extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, IntPtr lpBuffer, int nSize, int * lpNumberOfBytesWritten);
 
-[<DllImport("kernel32.dll")>]
-extern int VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, MemoryBasicInformation * lpBuffer, int dwLength);
-
-[<DllImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)>]
-extern void FillMemory(IntPtr destination, int length, byte fill);
-
 [<DllImport("kernel32.dll", SetLastError = true)>]
 extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, IntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
 
-[<DllImport("DbgHelp.dll")>]
-extern bool SymInitialize(IntPtr hProcess, nativeint userSearchPath, bool fInvadeProcess);
+[<DllImport("kernel32.dll")>]
+extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, UInt32 dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, UInt32 dwCreationFlags, IntPtr * lpThreadId);
 
-[<DllImport("DbgHelp.dll")>]
-extern bool SymCleanup(IntPtr hProcess);
+[<DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)>]
+extern bool IsWow64Process(IntPtr hProcess, bool * wow64Process);
 
-[<DllImport("DbgHelp.dll", SetLastError = true)>]
-extern bool SymFromName(IntPtr hProcess, string name, SymbolInfo * symbol);
+[<DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)>]
+extern int GetProcessId (IntPtr hProcess);
 
-let getProcessBasicInfo (handle: IntPtr) =
-    let basicInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typedefof<ProcessBasicInformation>));
+type LibraryPath = { Path86: string; Path64: string }
 
-    NtQueryInformationProcess(handle, 0, basicInfoPtr, Marshal.SizeOf(typedefof<ProcessBasicInformation>), IntPtr.Zero) |> ignore
+let findFunction (processHandle: IntPtr) (library: string) (name: string) =
+    let library = ToolHelp.createSnapshot(ToolHelp.SnapshotFlags.Module ||| ToolHelp.SnapshotFlags.Module32) (GetProcessId(processHandle))
+                    |> ToolHelp.modules
+                    |> Seq.find (fun m -> m.ModuleName.Equals(library, StringComparison.InvariantCultureIgnoreCase))  
 
-    let basicInfo = Marshal.PtrToStructure(basicInfoPtr, typedefof<ProcessBasicInformation>) :?> ProcessBasicInformation
+    let peFile = PeFile(library.ModulePath)    
+    let func = peFile.ExportedFunctions |> Seq.find (fun f -> f.Name.Equals(name))
 
-    Marshal.FreeHGlobal(basicInfoPtr)
+    library.BaseAddress + (nativeint func.Address)
 
-    basicInfo
+let injectLibrary (processHandle: IntPtr) (library: LibraryPath) =
+    let loadLibrary = findFunction processHandle  "kernel32.dll" "LoadLibraryA"
+  
+    let mutable isWow = false
 
-let read<'t when 't:unmanaged> (processHandle: IntPtr) (address: nativeptr<byte>) =
-    let size = Marshal.SizeOf(typedefof<'t>)
-    let buffer = Marshal.AllocHGlobal(size)
+    IsWow64Process(processHandle, &&isWow) |> ignore
 
-    let mutable rr = 0
+    let libraryPath = if isWow then library.Path86 else library.Path64
 
-    let r = ReadProcessMemory(processHandle, NativePtr.toNativeInt address, buffer, size, &&rr)
+    let arg = VirtualAllocEx(processHandle, IntPtr.Zero, nativeint (libraryPath.Length + 1), AllocationType.Commit ||| AllocationType.Reserve, MemoryProtection.ReadWrite)
 
-    let result = NativePtr.ofNativeInt<'t> buffer |> NativePtr.read
-
-    Marshal.FreeHGlobal(buffer)
-
-    result
-
-let write<'t when 't: unmanaged> (processHandle: IntPtr) (address: nativeptr<byte>) (value: 't) =
-    let mutable x = value
-
-    let ptr = &&x |> NativePtr.toNativeInt
+    let argPtr = Marshal.StringToHGlobalAnsi(libraryPath)
 
     let mutable written = 0
 
-    WriteProcessMemory(processHandle, NativePtr.toNativeInt address, ptr, sizeof<'t>, &&written)
+    WriteProcessMemory(processHandle, arg, argPtr, libraryPath.Length + 1, &&written) |> ignore
 
-let readField<'s, 't when 't: unmanaged> (fieldName:string) (processHandle: IntPtr) (baseAddress: nativeptr<byte>) =
-    let offset = Marshal.OffsetOf(typedefof<'s>, fieldName).ToInt32()
-    let effectiveAddress = NativePtr.add baseAddress offset
+    let mutable threadId = IntPtr.Zero
 
-    read<'t> processHandle effectiveAddress
+    CreateRemoteThread(processHandle, IntPtr.Zero, 0u, loadLibrary, arg, 0u, &&threadId) |> ignore
 
-let readRange<'t when 't: unmanaged> (processHandle: IntPtr) (baseAddress: nativeptr<byte>) (size: int) =
-    let mutable readBytes = 0
-
-    let buffer = Marshal.AllocHGlobal(size)
-
-    ReadProcessMemory(processHandle, NativePtr.toNativeInt baseAddress, buffer, size, &&readBytes) |> ignore
-
-    NativePtr.ofNativeInt<'t> buffer
-
-let readPeb (processHandle: IntPtr) =
-    let basicInfo = getProcessBasicInfo processHandle
-    read<PEB> processHandle basicInfo.PebBaseAddress
-
-let splitStrings (buffer:nativeptr<byte>) (size:int) =   
-    let rec strings (start: nativeptr<char>) (stop:nativeptr<char>) =
-        seq {
-            if start = stop then
-                ()
-            else
-                let str = String(start)
-                if str <> "" then
-                    yield str
-                    let next = NativePtr.add start (str.Length + 1)
-                    yield! strings next stop
-        }
-
-    let charsStart = buffer |> NativePtr.toNativeInt |> NativePtr.ofNativeInt<char>
-    let charsStop = NativePtr.add buffer size |> NativePtr.toNativeInt |> NativePtr.ofNativeInt<char>
-
-    strings charsStart charsStop      
-
-let asEnvVariable (s:string) =
-    let parts = s.Split([| '=' |], 2)
-    (parts.[0], parts.[1])
-
-let readEnvironmentBlock (processHandle: IntPtr) =
-    let peb = readPeb processHandle
-    
-    let environmentBlockStart = readField<RTLUserProcessParameters, nativeptr<byte>> "Environment" processHandle peb.ProcessParameters
-    let environmentBlockSize = int (readField<RTLUserProcessParameters, UInt64> "EnvironmentSize" processHandle peb.ProcessParameters)
-
-    let environmentBlock = readRange<byte> processHandle environmentBlockStart environmentBlockSize
-
-    let result = splitStrings environmentBlock environmentBlockSize
-                    |> Seq.map asEnvVariable
-                    |> Map.ofSeq
-
-    Marshal.FreeHGlobal(NativePtr.toNativeInt environmentBlock)
-
-    result
-
-let findFunction (processHandle: IntPtr) (library: string) (name: string) =
-    SymInitialize(processHandle, IntPtr.Zero, false) |> ignore
-
-    let mutable symInfo = SymbolInfo()
-    symInfo.SizeOfStruct <- Marshal.SizeOf(typedefof<SymbolInfo>)
-
-    let b = SymFromName(processHandle, "LoadLibrary", &&symInfo)
-    let e = Marshal.GetLastWin32Error()
-    
-    SymCleanup(processHandle) |> ignore
-    ()
-
-let writeEnvVariable (processHandle: IntPtr) (name: string) (value: string) =
-    let loadLibrary = findFunction processHandle  "kernel32" "LoadLibraryW"
-
-    ()

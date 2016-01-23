@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Pather</RootNamespace>
     <AssemblyName>Pather</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>Pather</Name>
@@ -40,33 +40,6 @@
     <DocumentationFile>bin\Release\Pather.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="PathName.fs" />
-    <None Include="App.config" />
-    <Compile Include="PathSet.fs" />
-    <Compile Include="PathsFile.fs" />
-    <Compile Include="SystemSettings.fs" />
-    <Compile Include="Cli.fs" />
-    <Compile Include="Native.fs" />
-    <Compile Include="RemoteProcess.fs" />
-    <Compile Include="Commands\preview.fs" />
-    <Compile Include="Commands\run.fs" />
-    <Compile Include="Commands\dumpSys.fs" />
-    <Compile Include="Commands\configSys.fs" />
-    <Compile Include="Commands\load.fs" />
-    <Compile Include="Program.fs" />
-    <None Include="paket.references" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -151,4 +124,60 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <None Include="App.config" />
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="PathName.fs" />
+    <Compile Include="PathSet.fs" />
+    <Compile Include="PathsFile.fs" />
+    <Compile Include="SystemSettings.fs" />
+    <Compile Include="Cli.fs" />
+    <Compile Include="ToolHelp.fs" />
+    <Compile Include="Native.fs" />
+    <Compile Include="RemoteProcess.fs" />
+    <Compile Include="Commands\preview.fs" />
+    <Compile Include="Commands\run.fs" />
+    <Compile Include="Commands\dumpSys.fs" />
+    <Compile Include="Commands\configSys.fs" />
+    <Compile Include="Commands\load.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="PeNet">
+      <HintPath>..\packages\PeNet\lib\PeNet.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
+  <Target Name="_AddInjections">
+    <ItemGroup>
+      <Injections Include="Injection.x86">
+        <Arch>x86</Arch>
+      </Injections>
+      <Injections Include="Injection.x64">
+        <Arch>x64</Arch>
+      </Injections>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).dll">
+        <Link>Injections\Injection.%(Injections.Arch).dll</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).pdb">
+        <Link>Injections\Injection.%(Injections.Arch).pdb</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+  </Target>
+  <Target Name="BeforeBuild">
+    <CallTarget Targets="_AddInjections" />
+  </Target>
 </Project>
