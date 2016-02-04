@@ -63,6 +63,57 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <None Include="App.config" />
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="PathName.fs" />
+    <Compile Include="PathSet.fs" />
+    <Compile Include="PathsFile.fs" />
+    <Compile Include="SystemSettings.fs" />
+    <Compile Include="Cli.fs" />
+    <Compile Include="ToolHelp.fs" />
+    <Compile Include="Native.fs" />
+    <Compile Include="RemoteProcess.fs" />
+    <Compile Include="Commands\preview.fs" />
+    <Compile Include="Commands\run.fs" />
+    <Compile Include="Commands\dumpSys.fs" />
+    <Compile Include="Commands\configSys.fs" />
+    <Compile Include="Commands\load.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <Target Name="_AddInjections">
+    <ItemGroup>
+      <Injections Include="Injection.x86">
+        <Arch>x86</Arch>
+      </Injections>
+      <Injections Include="Injection.x64">
+        <Arch>x64</Arch>
+      </Injections>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).dll">
+        <Link>Injections\Injection.%(Injections.Arch).dll</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).pdb">
+        <Link>Injections\Injection.%(Injections.Arch).pdb</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+  </Target>
+  <Target Name="BeforeBuild">
+    <CallTarget Targets="_AddInjections" />
+  </Target>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0')">
       <ItemGroup>
@@ -73,7 +124,7 @@
         </Reference>
       </ItemGroup>
     </When>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')">
       <ItemGroup>
         <Reference Include="CommandLine">
           <HintPath>..\packages\CommandLineParser\lib\net45\CommandLine.dll</HintPath>
@@ -84,7 +135,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')">
       <ItemGroup>
         <Reference Include="FParsec">
           <HintPath>..\packages\FParsec\lib\net40-client\FParsec.dll</HintPath>
@@ -113,8 +164,15 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Reference Include="PeNet">
+      <HintPath>..\packages\PeNet\lib\PeNet.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
   <Choose>
-    <When Condition="($(TargetFrameworkIdentifier) == 'WindowsPhoneApp') Or ($(TargetFrameworkIdentifier) == '.NETCore') Or ($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'WindowsPhone' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac') Or ($(TargetFrameworkProfile) == 'Profile7') Or ($(TargetFrameworkProfile) == 'Profile31') Or ($(TargetFrameworkProfile) == 'Profile32') Or ($(TargetFrameworkProfile) == 'Profile44') Or ($(TargetFrameworkProfile) == 'Profile49') Or ($(TargetFrameworkProfile) == 'Profile78') Or ($(TargetFrameworkProfile) == 'Profile84') Or ($(TargetFrameworkProfile) == 'Profile111') Or ($(TargetFrameworkProfile) == 'Profile151') Or ($(TargetFrameworkProfile) == 'Profile157') Or ($(TargetFrameworkProfile) == 'Profile259')">
+    <When Condition="($(TargetFrameworkIdentifier) == 'WindowsPhoneApp') Or ($(TargetFrameworkIdentifier) == '.NETCore') Or ($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')) Or ($(TargetFrameworkIdentifier) == 'WindowsPhone' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac') Or ($(TargetFrameworkProfile) == 'Profile7') Or ($(TargetFrameworkProfile) == 'Profile31') Or ($(TargetFrameworkProfile) == 'Profile32') Or ($(TargetFrameworkProfile) == 'Profile44') Or ($(TargetFrameworkProfile) == 'Profile49') Or ($(TargetFrameworkProfile) == 'Profile78') Or ($(TargetFrameworkProfile) == 'Profile84') Or ($(TargetFrameworkProfile) == 'Profile111') Or ($(TargetFrameworkProfile) == 'Profile151') Or ($(TargetFrameworkProfile) == 'Profile157') Or ($(TargetFrameworkProfile) == 'Profile259')">
       <ItemGroup>
         <Reference Include="System.Collections.Immutable">
           <HintPath>..\packages\System.Collections.Immutable\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
@@ -124,60 +182,4 @@
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <None Include="App.config" />
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="PathName.fs" />
-    <Compile Include="PathSet.fs" />
-    <Compile Include="PathsFile.fs" />
-    <Compile Include="SystemSettings.fs" />
-    <Compile Include="Cli.fs" />
-    <Compile Include="ToolHelp.fs" />
-    <Compile Include="Native.fs" />
-    <Compile Include="RemoteProcess.fs" />
-    <Compile Include="Commands\preview.fs" />
-    <Compile Include="Commands\run.fs" />
-    <Compile Include="Commands\dumpSys.fs" />
-    <Compile Include="Commands\configSys.fs" />
-    <Compile Include="Commands\load.fs" />
-    <Compile Include="Program.fs" />
-    <None Include="paket.references" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="PeNet">
-      <HintPath>..\packages\PeNet\lib\PeNet.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-  </ItemGroup>
-  <Target Name="_AddInjections">
-    <ItemGroup>
-      <Injections Include="Injection.x86">
-        <Arch>x86</Arch>
-      </Injections>
-      <Injections Include="Injection.x64">
-        <Arch>x64</Arch>
-      </Injections>
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).dll">
-        <Link>Injections\Injection.%(Injections.Arch).dll</Link>
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).pdb">
-        <Link>Injections\Injection.%(Injections.Arch).pdb</Link>
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-  </Target>
-  <Target Name="BeforeBuild">
-    <CallTarget Targets="_AddInjections" />
-  </Target>
 </Project>
