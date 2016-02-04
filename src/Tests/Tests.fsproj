@@ -66,6 +66,7 @@
     <Compile Include="ParsingTests.fs" />
     <Compile Include="EnvironmentInjectionTests.fs" />
     <Compile Include="GrammarTests.fs" />
+    <Compile Include="PathGrammarTests.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>

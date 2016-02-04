@@ -193,7 +193,3 @@ NUGET
     xunit.runner.console (2.1.0)
     xunit.runner.visualstudio (2.1.0) - version_in_path: true
     xunit.runners (2.0.0)
-HTTP
-  remote: http://www.antlr.org
-  specs:
-    antlr-4.5.1-complete.jar (/download/antlr-4.5.1-complete.jar)
