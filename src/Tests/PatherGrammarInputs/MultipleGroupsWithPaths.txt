@@ -1,0 +1,15 @@
+﻿group LocalPaths of
+	C:\
+	c:\
+	D:\Path1
+	d:\path1\
+	d:\path1\path11\
+	d:\path1\path11
+	C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools
+end
+
+group NetworkPaths of
+	\\my_server\c$
+	\\myserver.domain.com\share\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools
+	\\myserver.domain.com\share$\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools
+end

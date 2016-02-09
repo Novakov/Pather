@@ -50,6 +50,12 @@
     <Compile Include="Path.g4.parser.cs">
       <DependentUpon>Path.g4</DependentUpon>
     </Compile>
+    <Compile Include="PatherLexer.g4.cs">
+      <DependentUpon>PatherLexer.g4</DependentUpon>
+    </Compile>
+    <Compile Include="PatherParser.g4.cs">
+      <DependentUpon>PatherParser.g4</DependentUpon>
+    </Compile>
     <Compile Include="PathsFileLexer.g4.cs">
       <DependentUpon>PathsFileLexer.g4</DependentUpon>
     </Compile>
@@ -69,6 +75,14 @@
       <CustomToolNamespace>Grammar</CustomToolNamespace>
     </Antlr4>
     <Antlr4 Include="Path.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="PatherLexer.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="PatherParser.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Grammar</CustomToolNamespace>
     </Antlr4>

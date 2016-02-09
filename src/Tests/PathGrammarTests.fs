@@ -17,6 +17,7 @@ type Tests(out: ITestOutputHelper) =
             yield [| @"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools" |]            
             yield [| @"\\server\share" |]
             yield [| @"\\server.domain.com\share\share2" |]
+            yield [| @"C:\Program Files (x86)\Microsoft SDKs\Windows\v${highest}\bin\NETFX 4.6.1 Tools"|]
         }
 
     [<TheoryAttribute()>]
@@ -24,8 +25,8 @@ type Tests(out: ITestOutputHelper) =
     member __.Tokens (path: string) =
         let inputStream = new AntlrInputStream(path)
 
-        let lexer = new PathLexer(inputStream)
-       
+        let lexer = new PathLexer(inputStream)              
+
         lexer.GetAllTokens()
         |> Seq.filter (fun t -> t.Channel <> PathLexer.Hidden)
         |> Seq.iter (fun t ->

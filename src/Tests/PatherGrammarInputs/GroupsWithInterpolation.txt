@@ -1,0 +1,4 @@
+﻿group Interpolation1 of
+	C:\Program Files (x86)\Microsoft SDKs\Windows\v{highest}A\bin\NETFX 4.6.1 Tools
+end
+

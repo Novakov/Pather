@@ -1,15 +1,17 @@
 grammar Path;
 
-/*
- * Parser Rules
- */
 
 root:
 	  DRIVE relativePath		
 	| NET_SERVER relativePath	
 	;
 
-relativePath: (SEP NAME?)*;
+relativePath: (SEP name?)*;
+
+name: 
+	(NAME_CHAR | interpolation)* ;
+
+interpolation: '${' EXPR '}' ;
 
 /*
  * Lexer Rules
@@ -21,6 +23,9 @@ WS
 
 DRIVE: [a-zA-Z] ':' ;
 SEP: '\\' | '/' ;
-NAME: ~[\\/]+ ;
+//SIMPLE_NAME: ~[\\/]+ ;
+NAME_CHAR: [\\/] ;
 
 NET_SERVER: '\\\\' ~[\\/]+ ;
+EXPR: ~'}' ;
+
