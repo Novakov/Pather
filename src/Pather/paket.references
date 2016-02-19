@@ -2,3 +2,4 @@
 CommandLineParser 
 FParsec
 PeNet
+Antlr4.Runtime

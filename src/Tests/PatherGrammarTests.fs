@@ -15,7 +15,7 @@ type PrintFileListener(out: ITestOutputHelper) =
     let currentPath = new StringBuilder()
 
     override this.EnterGroup ctx =
-        out.WriteLine("Group {0}:", ctx.ID().GetText())
+        out.WriteLine("Group {0}:", ctx.GROUP_ID().GetText())
 
     override this.EnterLocalPath ctx =        
         currentPath.Clear() |> ignore
@@ -80,7 +80,7 @@ type Tests(out: ITestOutputHelper) =
         lexer.Mode(PatherLexer.PATHS_FILE);    
 
         lexer.GetAllTokens()
-        |> Seq.filter (fun t -> t.Channel <> PathLexer.Hidden)
+        |> Seq.filter (fun t -> t.Channel <> PatherLexer.Hidden)
         |> Seq.iter (fun t ->
             let typeName = PatherLexer.tokenNames.ElementAtOrDefault(t.Type)
 

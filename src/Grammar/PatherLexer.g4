@@ -13,7 +13,7 @@ mode PATHS_FILE;
 PATHS_EOL: '\r'? '\n' ;
 GROUP: 'group' ;
 OF: 'of' -> mode(PATHS_LIST);
-ID: ~[ \n\r]+ ;
+GROUP_ID: ~[ \n\r]+ ;
 
 mode PATHS_LIST;
 LIST_WS: [ \t] ;
@@ -30,7 +30,17 @@ PATH_NAME_FRAGMENT: ~[\\/\n\r{]+ { inPath }? ;
 
 
 mode EXPRESSION;
+EXPR_WS: [ \t] -> skip ;
 INTERPOLATION_END: '}' -> mode(PATHS_LIST) ;
-EXPR: ~'}'+ ;
 
-//LINE: ~[\n\r\t ] ~[\n\r]* ;
+COLON: ':' ;
+OP: ( '+' | '|' ) ;
+LPAREN: '(' ;
+RPAREN: ')' ;
+COMMA: ',' ;
+
+STRING: '\'' ~'\''* '\'' ;
+NUMBER: '-'? [0-9]+ ('.' [0-9]+)? ;
+ID: [a-zA-Z0-9_-]+ ;
+
+
