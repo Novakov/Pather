@@ -8,6 +8,7 @@ open Xunit
 open Xunit.Abstractions
 open Antlr4.Runtime
 open Grammar
+open Parsing
 
 type PrintFileListener(out: ITestOutputHelper) =
     inherit Grammar.PatherParserBaseListener()
@@ -57,29 +58,27 @@ type Tests(out: ITestOutputHelper) =
         use reader = new System.Resources.ResourceReader(resourceStream)        
 
         reader
-                |> Seq.cast<DictionaryEntry>
-                |> Seq.filter (fun r -> r.Key.ToString().StartsWith("pathergrammarinputs/"))
-                |> Seq.map (fun r -> 
-                    let stream = r.Value :?> Stream
+            |> Seq.cast<DictionaryEntry>
+            |> Seq.filter (fun r -> r.Key.ToString().StartsWith("pathergrammarinputs/"))
+            |> Seq.map (fun r -> 
+                let stream = r.Value :?> Stream
 
-                    use streamReader = new StreamReader(stream)
-                    streamReader.ReadToEnd()
-                )
-                |> Seq.map (fun r -> [| r |])
-                |> Seq.toArray
+                use streamReader = new StreamReader(stream)
+                streamReader.ReadToEnd()
+            )
+            |> Seq.map (fun r -> [| r |])
+            |> Seq.toArray
 
         
         
     [<TheoryAttribute()>]
     [<MemberDataAttribute("Inputs")>]
     member __.Tokens (path: string) =
-        let inputStream = new AntlrInputStream(path)
-
-        let lexer = new PatherLexer(inputStream)          
-        
-        lexer.Mode(PatherLexer.PATHS_FILE);    
-
-        lexer.GetAllTokens()
+        path
+        |> createLexer
+        |> lexMode PatherLexer.PATHS_FILE
+        |> allTokens
+        |> skipHiddenTokens
         |> Seq.filter (fun t -> t.Channel <> PatherLexer.Hidden)
         |> Seq.iter (fun t ->
             let typeName = PatherLexer.tokenNames.ElementAtOrDefault(t.Type)
@@ -87,33 +86,17 @@ type Tests(out: ITestOutputHelper) =
             sprintf "(%d, %d) %s -> %s" t.Line t.Column t.Text typeName
             |> out.WriteLine            
         )
-        
-        ()
+        |> ignore
 
     [<TheoryAttribute()>]
     [<MemberDataAttribute("Inputs")>]
-    member __.ParseTree (path: string) =
-        let inputStream = new AntlrInputStream(path)
-
-        let lexer = new PatherLexer(inputStream)
-
-        lexer.Mode(PatherLexer.PATHS_FILE);
-
-        let tokenStream = new BufferedTokenStream(lexer)
-
-        let parser = new PatherParser(tokenStream)
-
-        let root = parser.root()
- 
-        let listener = PrintFileListener(out)
-
-        let walker = new Antlr4.Runtime.Tree.ParseTreeWalker()
-        walker.Walk(listener, root)
-
-        out.WriteLine("\n---------------------\n")
-
-        let tree = root.ToStringTree(parser).Replace("\\r", "\r").Replace("\\n", "\n")
-
-        out.WriteLine(tree)      
-
-        ()
+    member __.ParseTree (path: string) =        
+        path
+        |> createLexer
+        |> lexMode PatherLexer.PATHS_FILE
+        |> createParser
+        |> (fun p -> p.root())
+        |> walk (PrintFileListener(out))      
+        |> stringTree out.WriteLine
+        |> ignore
+    

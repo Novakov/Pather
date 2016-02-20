@@ -68,6 +68,7 @@
     <Compile Include="PathSetTests.fs" />
     <Compile Include="ParsingTests.fs" />
     <Compile Include="EnvironmentInjectionTests.fs" />
+    <Compile Include="Parsing.fs" />
     <Compile Include="PatherGrammarTests.fs" />
     <Compile Include="ExpressionGrammarTests.fs" />
     <Compile Include="ExpressionEvaluatorTests.fs" />

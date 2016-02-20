@@ -7,6 +7,7 @@ open Antlr4.Runtime
 open System.Linq
 open FsUnit.Xunit
 open Antlr4.Runtime.Tree
+open Parsing
 
 let cast<'t when 't: not struct> (o: obj) = 
     o |> should be ofExactType<'t>
@@ -32,14 +33,6 @@ let valueName (ctx: PatherParser.ValueReferenceExpressionContext) = ctx.ValueNam
 let funcCall (ctx: IParseTree) = (cast<PatherParser.FunctionCallContext> ctx)
 
 let simple (ctx: IParseTree) = (cast<PatherParser.WrappedSimpleExpressionContext> ctx).simpleExpression()
-
-type xUnitErrorListener(out: ITestOutputHelper) = 
-    interface IAntlrErrorListener<IToken> with        
-        member this.SyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e) =
-            let t = PatherParser.DefaultVocabulary.GetDisplayName(offendingSymbol.Type)
-            out.WriteLine("({0}, {1}): {2} -> {3}", line, charPositionInLine, t, msg)
-            ()
-
 
 type Expression =
         | Number of Value: double
@@ -75,14 +68,11 @@ let rec assertTree (actual: IParseTree) (expected: Expression) =
   
 type Test(out: ITestOutputHelper) =
     member private this.Parse (input: string) =
-        let mutable charStream = new AntlrInputStream(input)
-        
-        let lexer = new PatherLexer(charStream)
-        
-        lexer.Mode(PatherLexer.EXPRESSION)
-
-        lexer.GetAllTokens()
-        |> Seq.filter (fun t -> t.Channel <> PatherLexer.Hidden)
+        input 
+        |> createLexer 
+        |> lexMode PatherLexer.EXPRESSION
+        |> allTokens
+        |> skipHiddenTokens
         |> Seq.iter (fun t -> 
             let typeName = PatherLexer.DefaultVocabulary.GetSymbolicName(t.Type)            
 
@@ -91,23 +81,16 @@ type Test(out: ITestOutputHelper) =
         )
        
         out.WriteLine("--------------------")
-
-        lexer.Reset ()
-
-        lexer.Mode(PatherLexer.EXPRESSION)    
-
-        let tokenStream = new BufferedTokenStream(lexer)
-
-        let parser = new PatherParser(tokenStream)
-
-        parser.AddErrorListener(new DiagnosticErrorListener())
-        parser.AddErrorListener(new xUnitErrorListener(out))
-
-        let tree = parser.expression()        
         
-        let stringTree = tree.ToStringTree(parser).Replace("\\r", "\r").Replace("\\n", "\n")
-
-        out.WriteLine(stringTree)
+        let tree =
+            input 
+            |> createLexer 
+            |> lexMode PatherLexer.EXPRESSION
+            |> createParser
+            |> errorListener (new DiagnosticErrorListener())
+            |> errorListener (new xUnitErrorListener(out))
+            |> (fun p -> p.expression())
+            |> stringTree out.WriteLine    
 
         out.WriteLine("--------------------")
 
