@@ -34,8 +34,7 @@ let createParser (lexer: PatherLexer) =
     
 
 let errorListener listener (parser: PatherParser) =
-    parser.AddErrorListener(listener)
-
+    parser.AddErrorListener(listener)    
     parser
 
 let stringTree (out: string -> unit) (ctx: ParserRuleContext)  = 
@@ -51,3 +50,7 @@ let walk listener (ctx: ParserRuleContext) =
     walker.Walk(listener, ctx)
 
     ctx
+
+let run f p =
+    f p
+    p

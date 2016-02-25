@@ -62,6 +62,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Extensions.fs" />
     <Compile Include="PathNameTests.fs" />
     <Compile Include="PathNameSimplification.fs" />
     <None Include="App.config" />
@@ -72,6 +73,7 @@
     <Compile Include="PatherGrammarTests.fs" />
     <Compile Include="ExpressionGrammarTests.fs" />
     <Compile Include="ExpressionEvaluatorTests.fs" />
+    <Compile Include="ParsingErrorsTests.fs" />
     <Compile Include="FunctionCallerTests.fs" />
     <None Include="paket.references" />
     <Resource Include="PatherGrammarInputs\SingleEmptyGroup.txt" />
