@@ -7,7 +7,6 @@ NUGET
     Antlr4.Runtime (4.5-alpha003)
     CommandLineParser (2.0.275-beta)
     FAKE.Core (4.17.1)
-    FParsec (1.0.2)
     FsCheck (2.2.4)
       FSharp.Core (>= 3.1.2.5)
     FsCheck.Xunit (2.2.4)
@@ -146,7 +145,7 @@ NUGET
     xunit (2.1.0)
       xunit.assert (2.1.0)
       xunit.core (2.1.0)
-    xunit.abstractions (2.0.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.0
+    xunit.abstractions (2.0.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.1, wpv8.0
     xunit.assert (2.1.0)
       System.Collections (>= 4.0.0) - framework: dnxcore50
       System.Diagnostics.Debug (>= 4.0.0) - framework: dnxcore50
@@ -170,9 +169,9 @@ NUGET
       System.Runtime.Extensions (>= 4.0.0) - framework: dnxcore50
       System.Threading.Tasks (>= 4.0.0) - framework: dnxcore50
       xunit.abstractions (>= 2.0.0) - framework: dnxcore50
-      xunit.extensibility.core (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.0
-      xunit.extensibility.execution (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.0
-    xunit.extensibility.core (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.0
+      xunit.extensibility.core (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.1, wpv8.0
+      xunit.extensibility.execution (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.1, wpv8.0
+    xunit.extensibility.core (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, portable-net45+win80+wp80+wpa81, xamarinios, winv4.5, wpv8.1, wpv8.0
       xunit.abstractions (2.0.0)
     xunit.extensibility.execution (2.1.0)
       System.Collections (>= 4.0.0) - framework: dnxcore50
@@ -189,7 +188,7 @@ NUGET
       System.Threading (>= 4.0.0) - framework: dnxcore50
       System.Threading.Tasks (>= 4.0.0) - framework: dnxcore50
       xunit.abstractions (>= 2.0.0) - framework: dnxcore50
-      xunit.extensibility.core (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, xamarinios, winv4.5, wpv8.0
+      xunit.extensibility.core (2.1.0) - framework: >= net45, dnx451, dnxcore50, monoandroid, monotouch, xamarinios, winv4.5, wpv8.1, wpv8.0
     xunit.runner.console (2.1.0)
     xunit.runner.visualstudio (2.1.0) - version_in_path: true
     xunit.runners (2.0.0)

@@ -27,7 +27,7 @@ let execute (args: Args) =
     
     let setPart part group kind getter setter =
         if args.Part.HasFlag(part) then
-            let inputSet = file.[group].Paths
+            let inputSet = file.[group]
             let existingSet = getter ()
             let finalSet = existingSet |> PathSet.merge inputSet kind
             

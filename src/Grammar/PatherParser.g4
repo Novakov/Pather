@@ -8,7 +8,7 @@ options {
 root: group* EOF ;
 
 
-group: GROUP GROUP_ID OF LIST_EOL (LIST_WS path LIST_EOL)* LIST_EOL END PATHS_EOL;
+group: GROUP GROUP_ID OF LIST_EOL (LIST_WS path LIST_EOL)* LIST_WS* END ;
 
 path: LIST_WS?	
       DRIVE relativePath		#localPath

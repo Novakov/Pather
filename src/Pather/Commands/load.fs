@@ -23,7 +23,7 @@ let execute (args: Args) =
 
     let initialPathSet = RemoteProcess.readPathSet targetProcessId
 
-    let updatedPathSet = initialPathSet |> PathSet.merge group.Paths args.Mode
+    let updatedPathSet = initialPathSet |> PathSet.merge group args.Mode
 
     RemoteProcess.setPath targetProcessId updatedPathSet
 

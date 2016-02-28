@@ -4,13 +4,14 @@ lexer grammar PatherLexer;
 	private bool inPath = false;
 }
 
-WS
-	:	' ' -> channel(HIDDEN)
-	;
-
+TMP: ' ' -> channel(HIDDEN);
 
 mode PATHS_FILE;
-PATHS_EOL: '\r'? '\n' ;
+WS
+	:	(' ' | '\r' | '\n') -> channel(HIDDEN)
+	;
+
+// PATHS_EOL: '\r'? '\n' ;
 GROUP: 'group' ;
 OF: 'of' -> mode(PATHS_LIST);
 GROUP_ID: ~[ \n\r]+ ;
@@ -26,7 +27,7 @@ SEP: '\\' | '/' ;
 
 INTERPOLATION_START: '{' -> mode(EXPRESSION) ;
 
-PATH_NAME_FRAGMENT: ~[\\/\n\r{]+ { inPath }? ;
+PATH_NAME_FRAGMENT: ~[\\/\n\r{]* { inPath }? ;
 
 
 mode EXPRESSION;

@@ -26,7 +26,7 @@ let execute (args: Args) =
 
     let parentSet = Environment.GetEnvironmentVariable("PATH") |> PathSet.fromEnvVar
 
-    let finalSet = parentSet |> PathSet.merge group.Paths args.Mode 
+    let finalSet = parentSet |> PathSet.merge group args.Mode 
 
     let startInfo = new ProcessStartInfo(args.Command, args.Args|> String.concat " ")
     startInfo.EnvironmentVariables.["PATH"] <- finalSet |> PathSet.toEnvVar

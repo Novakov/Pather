@@ -13,6 +13,11 @@ namespace Grammar
 
     partial class PatherParser
     {
+        partial class GroupContext
+        {
+            public string Id => this.GROUP_ID().GetText();
+        }
+
         partial class ValueReferenceExpressionContext
         {
             public string Scope => this.scope.Text;
