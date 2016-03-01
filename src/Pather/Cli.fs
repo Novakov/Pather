@@ -4,24 +4,27 @@ open CommandLine
 open System.Reflection
 
 type A =
-    | ExecuteCommand of Args: obj
-    | Error of Errors: string seq
+    | ExecuteCommand of Args: obj    
+    | Error of Text: CommandLine.Text.HelpText
 
-let private formatError (e:Error) = 
-    match e with 
-    | :? NamedError as n -> sprintf "%s: %s" n.NameInfo.NameText (n.Tag.ToString())
-    | _ -> e.Tag.ToString()
+let private (|HelpRequested|_|) (x: ParserResult<obj>) = 
+    match x with
+    | :? Parsed<obj> -> None
+    | :? NotParsed<obj> as p ->
+        p.Errors |> Seq.tryFind (fun e -> e :? HelpRequestedError || e :? HelpVerbRequestedError)
+
+let private parser = 
+    new CommandLine.Parser(fun settings ->
+                            settings.IgnoreUnknownArguments <- false
+                        )
 
 let parse (args: string[]) =
     let argTypes = Assembly.GetExecutingAssembly().GetTypes()
                     |> Seq.filter (fun x -> not (isNull (x.GetCustomAttribute(typeof<VerbAttribute>))))
                     |> Array.ofSeq
 
-    let parser = new CommandLine.Parser(fun settings ->
-                                            settings.IgnoreUnknownArguments <- false
-                                        )
 
     let result = parser.ParseArguments(args, argTypes)
-    match result with
-    | :? NotParsed<obj> as p -> Error(p.Errors |> Seq.map formatError)
+    match result with    
+    | :? NotParsed<obj> as p -> Error(CommandLine.Text.HelpText.AutoBuild(p))
     | :? Parsed<obj> as p -> ExecuteCommand(p.Value)

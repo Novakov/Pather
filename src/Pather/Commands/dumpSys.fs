@@ -7,9 +7,9 @@ open CommandLine
 
 open Pather
 
-[<Verb("dump-sys")>]
+[<Verb("dump-sys", HelpText = "Dump system PATH into file")>]
 type Args = {
-    [<Option('f', "file", Required = true)>]File: string
+    [<Option('f', "file", Required = true, HelpText = "Target file")>]File: string
 }
 
 let execute (args: Args) =

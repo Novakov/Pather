@@ -5,9 +5,9 @@ open CommandLine
 open Pather.PathsFile
 open Pather
 
-[<Verb("preview")>]
+[<Verb("preview", HelpText = "Preview paths in file")>]
 type Args = { 
-    [<Option('f', "file", Required = true)>]File: string 
+    [<Option('f', "file", Required = true, HelpText = "Input file")>]File: string 
 }
 
 

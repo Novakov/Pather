@@ -4,11 +4,11 @@ open CommandLine
 open Pather
 open System.IO
 
-[<Verb("load")>]
+[<Verb("load", HelpText = "Load given path set into calling process")>]
 type Args = {
-  [<Option('f', "file", Required = true)>]File: string; 
-  [<Option('g', "group", Default  = "default")>]Group: string;
-  [<Option('m', "mode", Default = PathSet.MergeKind.Append)>]Mode: PathSet.MergeKind;
+  [<Option('f', "file", Required = true, HelpText = "Input file")>]File: string; 
+  [<Option('g', "group", Default  = "default", HelpText = "Name of group that will be load")>]Group: string;
+  [<Option('m', "mode", Default = PathSet.MergeKind.Append, HelpText = "Pathset merge mode")>]Mode: PathSet.MergeKind;
 }
 
 let execute (args: Args) =    

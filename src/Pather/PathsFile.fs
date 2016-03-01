@@ -2,7 +2,6 @@
 
 open Antlr4.Runtime
 open Antlr4.Runtime.Tree
-open FParsec
 open Grammar
 open System.Text
 

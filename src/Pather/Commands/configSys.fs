@@ -9,14 +9,14 @@ type Part =
     | User = 2
     | All = 3
 
-[<Verb("config-sys")>]
+[<Verb("config-sys", HelpText = "Load path sets into system PATH")>]
 type Args = {
-    [<Option('f', "file", Required = true)>]File: string
-    [<Option('p', "part", Default = Part.All)>]Part: Part
-    [<Option('s', "system-group", Default = "system")>]SystemGroup: string
-    [<Option('S', "system-merge", Default = PathSet.MergeKind.Append)>]SystemMergeKind: PathSet.MergeKind
-    [<Option('u', "user-group", Default = "user")>]UserGroup: string
-    [<Option('U', "user-merge", Default = PathSet.MergeKind.Append)>]UserMergeKind: PathSet.MergeKind
+    [<Option('f', "file", Required = true, HelpText = "Input file")>]File: string
+    [<Option('p', "part", Default = Part.All, HelpText = "Parts that should be loaded")>]Part: Part
+    [<Option('s', "system-group", Default = "system", HelpText = "Name of group for system PATH")>]SystemGroup: string
+    [<Option('S', "system-merge", Default = PathSet.MergeKind.Append, HelpText = "Merge mode for system PATH")>]SystemMergeKind: PathSet.MergeKind
+    [<Option('u', "user-group", Default = "user", HelpText = "Name of group for user PATH")>]UserGroup: string
+    [<Option('U', "user-merge", Default = PathSet.MergeKind.Append, HelpText = "Merge mode for user PATH")>]UserMergeKind: PathSet.MergeKind
 }
 
 let execute (args: Args) =

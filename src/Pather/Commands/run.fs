@@ -6,13 +6,13 @@ open System.Diagnostics
 open Pather
 open CommandLine
 
-[<Verb("run")>]
+[<Verb("run", HelpText = "Run process with given path set")>]
 type Args = {
-    [<Option('f', "file", Required = true)>]File: string;
-    [<Option('g', "group", Default  = "default")>]Group: string;
-    [<Option('m', "mode", Default = PathSet.MergeKind.Append)>]Mode: PathSet.MergeKind;
-    [<Value(0, HelpText = "command to run", Required = true)>]Command: string;
-    [<Value(1, HelpText = "command args")>]Args: string seq
+    [<Option('f', "file", Required = true, HelpText = "Input file")>]File: string;
+    [<Option('g', "group", Default  = "default", HelpText = "Name of group to use")>]Group: string;
+    [<Option('m', "mode", Default = PathSet.MergeKind.Append, HelpText = "Pathset merge mode")>]Mode: PathSet.MergeKind;
+    [<Value(0, HelpText = "Command to run", Required = true)>]Command: string;
+    [<Value(1, HelpText = "Command args")>]Args: string seq
 }
 
 

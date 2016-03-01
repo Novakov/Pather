@@ -8,9 +8,9 @@ open Pather
 let main argv = 
     let commandArgs = Cli.parse argv
 
-    match commandArgs with
-    | Cli.Error(errors) -> 
-        errors |> Seq.iter (printf "Error: %s\n")
+    match commandArgs with   
+    | Cli.Error(t) ->
+        printf "%s" (t.ToString())
 
     | Cli.ExecuteCommand(command) ->
         let moduleType = command.GetType().DeclaringType
