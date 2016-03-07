@@ -6,7 +6,7 @@ open System.Linq
 
 type MergeKind =
     | Leave = 1
-    | Replace = 2
+    | Replace = 2    
     | Append = 3
     | Prepend = 4
 

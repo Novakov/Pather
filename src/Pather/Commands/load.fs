@@ -18,13 +18,13 @@ let execute (args: Args) =
                 | PathsFile.Failure(m) -> failwith m
 
     let group = file.Item(args.Group)
-
+    
     let targetProcessId = RemoteProcess.parentProcessId ()
 
     let initialPathSet = RemoteProcess.readPathSet targetProcessId
 
     let updatedPathSet = initialPathSet |> PathSet.merge group args.Mode
-
+    
     RemoteProcess.setPath targetProcessId updatedPathSet
 
     ()

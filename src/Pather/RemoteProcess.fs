@@ -19,7 +19,7 @@ let openChannel (processId: int) =
     
     let pipeName = sprintf "pather\%d" processId
     
-    let pipe = new NamedPipeServerStream(pipeName)    
+    let pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message)            
 
     Native.injectLibrary proc.Handle injectionPath
 
@@ -33,7 +33,7 @@ let pingPong (channel: NamedPipeServerStream) =
     channel.ReadByte() = 54
 
 let setEnvVar (channel: NamedPipeServerStream) (variable: string) (value: string) =
-    use writer = new BinaryWriter(channel, Encoding.Unicode)
+    use writer = new BinaryWriter(channel, Encoding.Unicode)    
 
     writer.Write(01uy)
     writer.Write(variable)
@@ -54,7 +54,7 @@ let readPathSet (processId : int) =
     readEnvVar channel "PATH" |> PathSet.fromEnvVar
 
 let setPath (processId : int) (path : PathSet.PathSet) = 
-    use channel = openChannel processId
+    use channel = openChannel processId    
     setEnvVar channel "PATH" (PathSet.toEnvVar path) |> ignore
 
 

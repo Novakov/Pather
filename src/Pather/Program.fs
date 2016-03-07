@@ -1,11 +1,9 @@
-﻿// Learn more about F# at http://fsharp.org
-// See the 'F# Tutorial' project for more help.
-
-open System
+﻿open System
 open Pather
 
+
 [<EntryPoint>]
-let main argv = 
+let main argv =     
     let commandArgs = Cli.parse argv
 
     match commandArgs with   
