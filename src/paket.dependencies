@@ -1,6 +1,8 @@
 redirects: on
 
 source https://nuget.org/api/v2
+
+
 nuget FAKE.Core
 nuget FsUnit.Xunit
 nuget xunit.core
@@ -12,5 +14,6 @@ nuget FsCheck.Xunit
 nuget System.Collections.Immutable
 nuget CommandLineParser >= 2 beta
 nuget PeNet
+nuget ILRepack.Lib
 
 nuget Antlr4 prerelease     

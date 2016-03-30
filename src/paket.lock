@@ -6,7 +6,7 @@ NUGET
       Antlr4.Runtime (>= 4.5-alpha003)
     Antlr4.Runtime (4.5-alpha003)
     CommandLineParser (2.0.275-beta)
-    FAKE.Core (4.17.1)
+    FAKE.Core (4.22.8)
     FsCheck (2.2.4)
       FSharp.Core (>= 3.1.2.5)
     FsCheck.Xunit (2.2.4)
@@ -16,6 +16,7 @@ NUGET
     FsUnit.xUnit (1.4.1)
       FSharp.Core (>= 3.1.2.5)
       xunit (2.1.0)
+    ILRepack.Lib (2.0.10)
     PeNet (0.2.4)
     System.Collections (4.0.10) - framework: dnxcore50
       System.Diagnostics.Debug (>= 4.0.0) - framework: dnxcore50

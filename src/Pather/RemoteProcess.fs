@@ -6,6 +6,7 @@ open System.IO.Pipes
 open System.IO
 open System.Text
 open Pather
+open System.Reflection
 
 let private injectionPath =
     let basePath = System.AppDomain.CurrentDomain.BaseDirectory
@@ -14,8 +15,29 @@ let private injectionPath =
         Native.LibraryPath.Path64 = Path.Combine(basePath, "Injections", "Injection.x64.dll")
     }
 
-let openChannel (processId: int) =
-    let proc = Process.GetProcessById(processId)
+let private unpackInjections () =    
+    Path.GetDirectoryName injectionPath.Path64 |> Directory.CreateDirectory |> ignore
+
+    let reader = new System.Resources.ResourceManager("Pather.g", Assembly.GetExecutingAssembly())
+
+    use x64 = reader.GetStream("injections/injection.x64.dll")
+
+    use x64File = File.Create(injectionPath.Path64)
+
+    x64.CopyTo(x64File)
+
+    use x86 = reader.GetStream("injections/injection.x86.dll")
+
+    use x86File = File.Create(injectionPath.Path86)
+
+    x86.CopyTo(x86File)
+
+    ()
+
+let openChannel (processId: int) =    
+    unpackInjections ()
+
+    use proc = Process.GetProcessById(processId)
     
     let pipeName = sprintf "pather\%d" processId
     

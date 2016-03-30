@@ -68,8 +68,14 @@ let injectLibrary (processHandle: IntPtr) (library: LibraryPath) =
     IsWow64Process(processHandle, &&isWow) |> ignore
 
     let libraryPath = if isWow then library.Path86 else library.Path64
+    
+    if not (File.Exists libraryPath) then
+        failwithf "Library %s not found" libraryPath
 
     let arg = VirtualAllocEx(processHandle, IntPtr.Zero, nativeint (libraryPath.Length + 1), AllocationType.Commit ||| AllocationType.Reserve, MemoryProtection.ReadWrite)
+
+    if arg = IntPtr.Zero then
+        failwithf "Virtual Alloc failed: %d" (Marshal.GetLastWin32Error())
 
     let argPtr = Marshal.StringToHGlobalAnsi(libraryPath)
 
