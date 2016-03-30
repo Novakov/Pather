@@ -16,23 +16,21 @@ let private injectionPath =
     }
 
 let private unpackInjections () =    
-    Path.GetDirectoryName injectionPath.Path64 |> Directory.CreateDirectory |> ignore
+    let archs = [ 
+        ("x64", injectionPath.Path64) 
+        ("x86", injectionPath.Path86) 
+    ]
 
     let reader = new System.Resources.ResourceManager("Pather.g", Assembly.GetExecutingAssembly())
 
-    use x64 = reader.GetStream("injections/injection.x64.dll")
+    archs |> Seq.iter (fun (arch, path) ->
+        Path.GetDirectoryName path |> Directory.CreateDirectory |> ignore
 
-    use x64File = File.Create(injectionPath.Path64)
+        use resStream = reader.GetStream(sprintf "injections/injection.%s.dll" arch)
+        use fileStream = File.Create(path)
 
-    x64.CopyTo(x64File)
-
-    use x86 = reader.GetStream("injections/injection.x86.dll")
-
-    use x86File = File.Create(injectionPath.Path86)
-
-    x86.CopyTo(x86File)
-
-    ()
+        resStream.CopyTo(fileStream)
+    )
 
 let openChannel (processId: int) =    
     unpackInjections ()

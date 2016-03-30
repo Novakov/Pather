@@ -73,10 +73,10 @@
       </Injections>
     </ItemGroup>
     <ItemGroup>
-      <Resource Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).dll">
+      <Resource Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\$(Configuration)\Injection.%(Injections.Arch).dll">
         <Link>Injections\Injection.%(Injections.Arch).dll</Link>
       </Resource>
-      <Resource Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\Debug\Injection.%(Injections.Arch).pdb">
+      <Resource Include="$(ProjectDir)..\Injection.%(Injections.Arch)\bin\$(Configuration)\Injection.%(Injections.Arch).pdb">
         <Link>Injections\Injection.%(Injections.Arch).pdb</Link>
       </Resource>
     </ItemGroup>
