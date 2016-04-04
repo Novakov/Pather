@@ -1,9 +1,9 @@
 ﻿open System
 open Pather
-
+open System.Reflection
 
 [<EntryPoint>]
-let main argv =     
+let main argv =                 
     let commandArgs = Cli.parse argv
 
     match commandArgs with   
